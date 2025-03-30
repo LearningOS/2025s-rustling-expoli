@@ -7,8 +7,6 @@
 // Execute `rustlings hint tests6` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 struct Foo {
     a: u128,
     b: Option<String>,
@@ -20,8 +18,16 @@ struct Foo {
 unsafe fn raw_pointer_to_box(ptr: *mut Foo) -> Box<Foo> {
     // SAFETY: The `ptr` contains an owned box of `Foo` by contract. We
     // simply reconstruct the box from that pointer.
-    let mut ret: Box<Foo> = unsafe { ??? };
-    todo!("The rest of the code goes here")
+    /*
+    这是一个不安全的操作，它接受一个原始指针并将其转换回 Box
+    这个函数假设指针指向的内存是由 Box 分配的
+    指针必须是通过 Box::into_raw() 创建的
+     */
+    let mut ret: Box<Foo> = Box::from_raw(ptr);
+    // 修改 b 字段的值
+    // to_owned() 会创建一个新的 String 实例
+    ret.b = Some("hello".to_owned());
+    ret
 }
 
 #[cfg(test)]
