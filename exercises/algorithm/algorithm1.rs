@@ -69,14 +69,53 @@ impl<T> LinkedList<T> {
             },
         }
     }
+}
+
+impl<T: PartialOrd + Clone> LinkedList<T> {
+    /// Merges two sorted linked lists into one sorted linked list.
+    /// The input lists must be sorted in ascending order.
+    /// The merged list will also be sorted in ascending order.
+    ///
+    /// # Arguments
+    ///
+    /// * `list_a` - The first sorted linked list.
+    /// * `list_b` - The second sorted linked list.
+    ///
+    /// # Returns
+    ///
+    /// A new linked list that contains all elements from both input lists, sorted in ascending order.
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merged_list = LinkedList::<T>::new();
+        let mut a_current = list_a.start;
+        let mut b_current = list_b.start;
+
+        while let (Some(a_ptr), Some(b_ptr)) = (a_current, b_current) {
+            let a_val = unsafe { &(*a_ptr.as_ptr()).val };
+            let b_val = unsafe { &(*b_ptr.as_ptr()).val };
+
+            if a_val <= b_val {
+                merged_list.add(a_val.clone());
+                a_current = unsafe { (*a_ptr.as_ptr()).next };
+            } else {
+                merged_list.add(b_val.clone());
+                b_current = unsafe { (*b_ptr.as_ptr()).next };
+            }
         }
+
+        while let Some(a_ptr) = a_current {
+            let a_val = unsafe { &(*a_ptr.as_ptr()).val };
+            merged_list.add(a_val.clone());
+            a_current = unsafe { (*a_ptr.as_ptr()).next };
+        }
+
+        while let Some(b_ptr) = b_current {
+            let b_val = unsafe { &(*b_ptr.as_ptr()).val };
+            merged_list.add(b_val.clone());
+            b_current = unsafe { (*b_ptr.as_ptr()).next };
+        }
+
+        merged_list
 	}
 }
 
